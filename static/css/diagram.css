@@ -1,0 +1,14 @@
+html, body
+{
+    height: 100%;
+}
+#Header
+{
+    /* width: 960px; */
+    /* height: 30px; */
+}
+#Graph
+{
+    height: 100%;
+    /* width: 960px; */
+}
