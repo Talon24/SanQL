@@ -104,4 +104,4 @@ venv.bak/
 .mypy_cache/
 
 # json workfiles
-.json
+*.json
