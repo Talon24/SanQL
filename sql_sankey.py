@@ -104,7 +104,7 @@ def generate(data, to_json=False):
 
     fig.update_layout(title_text="Execution plan",
                       font_size=12, font_family="monospace")
-    if returning:
+    if to_json:
         return json.dumps([fig], cls=utils.PlotlyJSONEncoder)
     else:
         fig.show()
