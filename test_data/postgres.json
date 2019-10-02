@@ -1,0 +1,86 @@
+[
+  {
+    "Plan": {
+      "Node Type": "Hash Join",
+      "Parallel Aware": false,
+      "Join Type": "Inner",
+      "Startup Cost": 1309.11,
+      "Total Cost": 2414.38,
+      "Plan Rows": 24860,
+      "Plan Width": 310,
+      "Inner Unique": true,
+      "Hash Cond": "((at.document_id)::text = (fi.file_name)::text)",
+      "Plans": [
+        {
+          "Node Type": "Hash Join",
+          "Parent Relationship": "Outer",
+          "Parallel Aware": false,
+          "Join Type": "Inner",
+          "Startup Cost": 1008.70,
+          "Total Cost": 1800.14,
+          "Plan Rows": 24860,
+          "Plan Width": 138,
+          "Inner Unique": true,
+          "Hash Cond": "(alt.alternate_key = at.word_key)",
+          "Plans": [
+            {
+              "Node Type": "Seq Scan",
+              "Parent Relationship": "Outer",
+              "Parallel Aware": false,
+              "Relation Name": "alternates",
+              "Alias": "alt",
+              "Startup Cost": 0.00,
+              "Total Cost": 477.60,
+              "Plan Rows": 24860,
+              "Plan Width": 39
+            },
+            {
+              "Node Type": "Hash",
+              "Parent Relationship": "Inner",
+              "Parallel Aware": false,
+              "Startup Cost": 759.42,
+              "Total Cost": 759.42,
+              "Plan Rows": 19942,
+              "Plan Width": 99,
+              "Plans": [
+                {
+                  "Node Type": "Seq Scan",
+                  "Parent Relationship": "Outer",
+                  "Parallel Aware": false,
+                  "Relation Name": "attributes",
+                  "Alias": "at",
+                  "Startup Cost": 0.00,
+                  "Total Cost": 759.42,
+                  "Plan Rows": 19942,
+                  "Plan Width": 99
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Node Type": "Hash",
+          "Parent Relationship": "Inner",
+          "Parallel Aware": false,
+          "Startup Cost": 225.74,
+          "Total Cost": 225.74,
+          "Plan Rows": 5974,
+          "Plan Width": 172,
+          "Plans": [
+            {
+              "Node Type": "Seq Scan",
+              "Parent Relationship": "Outer",
+              "Parallel Aware": false,
+              "Relation Name": "files",
+              "Alias": "fi",
+              "Startup Cost": 0.00,
+              "Total Cost": 225.74,
+              "Plan Rows": 5974,
+              "Plan Width": 172
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

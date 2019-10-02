@@ -81,7 +81,6 @@ def generate(data, to_json=False):
         value.append(max((thing["__cost"], 0.00001)))  # 0.0 wouldn't plot
         hovers.append(prettify_details(thing))
 
-
     fig = Figure(data=[Sankey(
         ids=labels,
         arrangement="freeform",
@@ -100,7 +99,7 @@ def generate(data, to_json=False):
             hoverlabel=dict(font=dict(
                 family="Courier New, monospace"))
         )
-        )])
+    )])
 
     fig.update_layout(title_text="Execution plan",
                       font_size=12, font_family="monospace")
@@ -209,7 +208,7 @@ def main():
     lines = []
     if arguments.mode == "gui":
         App()
-        exit()
+        sys.exit()
     elif arguments.mode == "input":
         try:
             print("Enter SQL Execution plan. Interrupt [CTRL + C] or "
