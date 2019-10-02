@@ -1,6 +1,11 @@
+[![Build Status](https://travis-ci.com/Talon24/SanQL.svg?branch=master)](https://travis-ci.com/Talon24/SanQL)
+![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)
+[![Updates](https://pyup.io/repos/github/Talon24/SanQL/shield.svg)](https://pyup.io/repos/github/Talon24/SanQL/)
+[![Python 3](https://pyup.io/repos/github/Talon24/SanQL/python-3-shield.svg)](https://pyup.io/repos/github/Talon24/SanQL/)
+
+
 # SanQL
 Visualize SQL explain plans with a sankey diagram.
-
 
 Convert an explain plan from a database into a graph that lets you easily see which steps produce costs and where optimization might be useful.
 ![Explain-Plan shown as a sankey-diagram](images/sankey.png)
