@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/diagram.css') }}">
+</head>
+
+<body>
+    {% for error in errors %}
+        <div id="error">{{error}}</div>
+    {% endfor %}
+
+    <h1>SanQL input</h1>
+    <form method="post">
+        <p> <h3>Explain plan input &emsp;&emsp;&emsp; <input type=submit value=Visualize> </h3>
+        <p> <textarea rows="20" cols="100" name=Query>{{data}}</textarea>
+    </form>
+    <p>Paste your json-formatted explain plan in this text field and hit the
+    Visualize-button to see the diagram corresponding to your
+    queries' explain plan.</p>
+    <p>To get a formatted explain plan, see the table below to find the
+    syntax for your database.</p>
+
+    <p></p>
+    <table id=tabelle>
+        <tr>
+            <th>Supported databases</th>
+            <th>Explain query prefix</th>
+        </tr>
+        <tr>
+            <td>Postgres</td>
+            <td><pre>explain (format json)<br>explain (format json, analyze)</pre></td>
+        </tr>
+        <tr>
+            <td>Vertica</td>
+            <td><pre>EXPLAIN JSON</pre></td>
+        </tr>
+    </table>
+</body>
+
+</html>
