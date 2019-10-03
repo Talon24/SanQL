@@ -1,19 +1,29 @@
-html, body
+html
 {
+    height: 100%;
+}
+
+head
+{
+    height: 10%;
+}
+body
+{
+    font-size: 1.1em;
+    font-family: sans-serif;
+    margin: 0px;
     height: 100%;
 }
 #Header
 {
-    /* width: 960px; */
-    /* height: 30px; */
+    padding-top: 0.5%;
+    min-height: 3.5%;
+    padding-left: 30px;
+    padding-right: 30px;
+    vertical-align: bottom;
 }
 #Graph
 {
-    height: 100%;
+    height: 95%;
     /* width: 960px; */
-}
-
-table, th, td
-{
-    border: 1px solid black;
 }

@@ -21,20 +21,21 @@ def welcome_page():
 def sankey_page():
     """Attempt to make the diagram, go back if impossible."""
     data = request.form["Query"]
+    retrieved = data
     try:
         data = json.loads(data)
     except json.decoder.JSONDecodeError:
         return render_template(
-            "welcome.html", errors=["Invalid json!"], data=data)
+            "welcome.html", errors=["Invalid json!"], data=retrieved)
     try:
         graph_json = sql_sankey.generate(data, to_json=True)
     except KeyError:
         return render_template(
             "welcome.html", errors=["Explain plan flavour is not supported!"],
-            data=data)
+            data=retrieved)
     return render_template(
         'diagram.html',
-        ids=["Graph"],
+        ids=["Graph"], data=retrieved,
         graphJSON=graph_json)
 
 

@@ -102,6 +102,7 @@ def generate(data, to_json=False):
     )])
 
     fig.update_layout(title_text="Execution plan",
+                      margin=dict(l=0, r=0, t=0, b=0),
                       font_size=12, font_family="monospace")
     if to_json:
         return json.dumps([fig], cls=utils.PlotlyJSONEncoder)
