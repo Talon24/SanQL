@@ -65,7 +65,7 @@ def find_json(data):
     return data
 
 
-def generate(data, to_json=False):
+def generate(data, to_json=False, mode="freeform"):
     """Generate graph data and show in browser."""
     labels, source, target, value, hovers = [], [], [], [], []
     indexes = {}
@@ -83,7 +83,7 @@ def generate(data, to_json=False):
 
     fig = Figure(data=[Sankey(
         ids=labels,
-        arrangement="freeform",
+        arrangement=mode,
         node=dict(
             pad=15,
             thickness=20,
@@ -102,6 +102,7 @@ def generate(data, to_json=False):
     )])
 
     fig.update_layout(title_text="Execution plan",
+                      margin=dict(l=0, r=0, t=0, b=0),
                       font_size=12, font_family="monospace")
     if to_json:
         return json.dumps([fig], cls=utils.PlotlyJSONEncoder)

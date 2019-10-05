@@ -3,11 +3,14 @@
 
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/diagram.css') }}">
-    <form id="Header" method="post">
-        Query <textarea cols="40" rows="1" name=Query> </textarea>
-        <!-- Query <input type=text name=Query> -->
-        <input type=submit value=Visualize>
-    </form>
+    <div class="inputs">
+        <form id="Header" method="post">
+            Query <textarea cols="40" rows="1" name=Query>{{data}}</textarea>
+            <input type=submit value=Visualize>
+            <input type="button" value="New SanQL Tab"
+            onclick="window.open(window.location.href)" style="float: right;"/>
+        </form>
+    </div>
 </head>
 
 <body>
