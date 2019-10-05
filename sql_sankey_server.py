@@ -21,6 +21,7 @@ def welcome_page():
 def sankey_page():
     """Attempt to make the diagram, go back if impossible."""
     data = request.form["Query"]
+    mode = request.cookies["arrangement_cookie"]
     retrieved = data
     try:
         data = json.loads(data)
@@ -28,11 +29,11 @@ def sankey_page():
         return render_template(
             "welcome.html", errors=["Invalid json!"], data=retrieved)
     try:
-        graph_json = sql_sankey.generate(data, to_json=True)
-    except KeyError:
+        graph_json = sql_sankey.generate(data, to_json=True, mode=mode)
+    except (KeyError, IndexError):
         return render_template(
-            "welcome.html", errors=["Explain plan flavour is not supported!"],
-            data=retrieved)
+            "welcome.html", data=retrieved,
+            errors=["Syntax error or explain plan flavour is not supported!"])
     return render_template(
         'diagram.html',
         ids=["Graph"], data=retrieved,

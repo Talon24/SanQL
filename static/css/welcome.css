@@ -10,3 +10,8 @@ table, th, td
 {
     border: 1px solid black;
 }
+
+fieldset {
+    display: inline-block;
+
+}

@@ -12,7 +12,7 @@
 
     <h1>SanQL input</h1>
     <form method="post">
-        <p> <h3>Explain plan input &emsp;&emsp;&emsp; <input type=submit value=Visualize> </h3>
+        <p> <h3>Explain plan input &emsp;&emsp;&emsp; <input id=viz type=submit value=Visualize> </h3>
         <p> <textarea rows="20" cols="100" name=Query>{{data}}</textarea>
     </form>
     <p>Paste your json-formatted explain plan in this text field and hit the
@@ -36,6 +36,75 @@
             <td><pre>EXPLAIN JSON</pre></td>
         </tr>
     </table>
+
+    <!-- https://stackoverflow.com/questions/28028269/storing-the-clicked-value-in-radio-buttonswith-cookies -->
+    <h3>Settings</h3>
+    <form>
+        <p>Node arrangement</p>
+        <fieldset id=fields>
+            <!-- <p> -->
+            <input type="radio" id="ff" name="arrangement" value="freeform">
+            <label for="ff"> Freeform </label> <br>
+            <!-- </p>
+            <p> -->
+            <input type="radio" id="sn" name="arrangement" value="snap">
+            <label for="sn"> Snapping </label> <br>
+            <!-- </p>
+            <p> -->
+            <input type="radio" id="pp" name="arrangement" value="perpendicular">
+            <label for="pp"> Perpendicular </label> <br>
+            <!-- </p> -->
+        </fieldset>
+    </form>
 </body>
+
+<footer>
+    <script type="text/javascript">
+        function setCookie(name, value, days) { // from http://www.quirksmode.org/js/cookies.html
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                var expires = "; expires=" + date.toGMTString();
+            } else var expires = "";
+            document.cookie = name + "=" + value + expires + "; path=/";
+        }
+
+        function getCookie(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+                }
+            return null;
+        }
+
+        window.onload = function () {
+            var arrangement = getCookie('arrangement_cookie');
+            if (arrangement) {
+                if (arrangement=="freeform") document.getElementById('ff').click();
+                else if (arrangement=="snap") document.getElementById('sn').click();
+                else if (arrangement=="perpendicular") document.getElementById('pp').click();
+            } else {
+                document.getElementById('sn').click();  // default
+            }
+        }
+
+        document.getElementById('fields').onclick = function () {
+            var ff = document.getElementById('ff');
+            var sn = document.getElementById('sn');
+            var pp = document.getElementById('pp');
+            if (ff.checked) {
+                setCookie('arrangement_cookie', ff.value, 30);
+            } else if (sn.checked) {
+                setCookie('arrangement_cookie', sn.value, 30);
+            } else if (pp.checked) {
+                setCookie('arrangement_cookie', pp.value, 30);
+            }
+        }
+
+    </script>
+</footer>
 
 </html>
