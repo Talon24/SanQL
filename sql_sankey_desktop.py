@@ -6,9 +6,11 @@ then shows the diagram in the browser.
 
 import sys
 import json
-import tkinter
 import argparse
 import traceback
+import tkinter
+import tkinter.scrolledtext
+import tkinter.messagebox
 
 import sql_sankey
 
