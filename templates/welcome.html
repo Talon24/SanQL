@@ -3,6 +3,9 @@
 
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/welcome.css') }}">
+    <div id=heading>
+        <h1>SanQL</h1>
+    </div>
 </head>
 
 <body>
@@ -10,7 +13,6 @@
         <div id="error">{{error}}</div>
     {% endfor %}
 
-    <h1>SanQL input</h1>
     <form method="post">
         <p> <h3>Explain plan input &emsp;&emsp;&emsp; <input id=viz type=submit value=Visualize> </h3>
         <p> <textarea rows="20" cols="100" name=Query>{{data}}</textarea>
