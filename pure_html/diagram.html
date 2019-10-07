@@ -320,14 +320,16 @@
                 // title: "Basic Sankey",
                 margin: {l: 0, r: 0, t: 0, b: 0},
                 font: {
-                    size: 10
+                    size: 12
                 }
             }
 
 
             Plotly.react('myDiv', data, layout, {showSendToCloud:false})
     }
+
     vizualize(json, arrangement)
+
     function vizualizeNew() {
         json = document.getElementById("planInput").value
         try {
@@ -342,7 +344,8 @@
         } catch (Error) {
 
         }
-        // window.history.pushState() // TODO
+        plan = encodeURIComponent(JSON.stringify(json))
+        window.history.pushState({}, "SanQL", "diagram.html" + "?plan=" + plan + "&mode=" + selectedMode())
     }
     </script>
 </footer>
