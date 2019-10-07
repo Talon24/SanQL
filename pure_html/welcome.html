@@ -5,7 +5,8 @@
         <link rel="shortcut icon" href="favicon.ico">
         <title>SanQL Explain Plan Vizualizer</title>
         <style>
-            html {font-family: sans-serif;}
+            html {font-family: sans-serif;
+                  background-color: #FAF9FA;}
             fieldset {display: inline-block;}
             table, th, td {border: 1px solid black;}
             #submitter {float: right;}
@@ -48,6 +49,10 @@
             <tr>
                 <td>Vertica</td>
                 <td><pre>EXPLAIN JSON</pre></td>
+            </tr>
+            <tr>
+                <td>MySQL</td>
+                <td><pre>EXPLAIN FORMT=JSON</pre></td>
             </tr>
         </table>
 

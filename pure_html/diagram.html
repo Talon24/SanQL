@@ -3,15 +3,19 @@
     <link rel="shortcut icon" href="favicon.ico">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <style>
-    /* body {background-color: powderblue;}
-    h1   {color: blue;}
-    p    {color: red;} */
-    #inputs {min-height: 5%}
+    /* body {background-color: powderblue;} */
+    /* h1   {color: blue;}   */
+    /* p    {color: red;} */
+    body {font-family: sans-serif;
+        background-color: #FAF9FA;}
     form {margin: 0px}
+    #inputs {min-height: 5%}
     #mydiv {height: 95%}
     #radios {display: inline-block;}
     fieldset {display: inline-block;}
     textarea {vertical-align: top;}​
+    .main-svg {background-color: #cccccc;}
+    #myDiv > div > div > svg:nth-child(1) {background-color: #FAF9FA !important;}
 </style>
 </head>
 
@@ -175,6 +179,8 @@
     function * walker(tree) {
         if (Array.isArray(tree)) {
             yield * postgres_walker(tree[0]["Plan"])
+        } else if ("query_block" in tree) {
+            yield * mysql_walker(tree["query_block"])
         } else {
             yield * vertica_walker(tree)
         }
@@ -254,6 +260,31 @@
             yield * vertica_walker(tree["Outer"], current, depth + 1)}
     }
 
+    function * mysql_walker(tree, parent=null, depth=0) {
+        var current = JSON.parse(JSON.stringify(tree))
+        delete current["nested_loop"]
+        delete current["used_columns"]
+        costs = 0
+        for (key in current["cost_info"]) {
+            current["Cost - " + key] = current["cost_info"][key]
+            if (key.endsWith("cost")) {
+                costs += Number(current["cost_info"][key])
+            }
+        }
+        current["__cost"] = costs
+        delete current["cost_info"]
+        name = current["table_name"]
+        if (depth == 0) {
+            name += " - Total Cost: {}".format(current["__cost"].toFixed(2))
+        }
+        current["__label"] = name
+        yield [current, parent, depth]
+        if ("nested_loop" in tree){
+            for (entry of tree["nested_loop"]) {
+                yield * mysql_walker(entry["table"], current, depth + 1)}
+        }
+    }
+
     function vizualize(json, arrangement="snap") {
         labels = []
         source = []
@@ -278,9 +309,9 @@
                 // console.log(thing);
                 idx += 1
             }
-        } catch (SyntaxError) {
+        } catch (e) {
             alert("Unsupported explain plan!")
-            throw new Error("Couldn't parse paln")
+            throw e
             return
         }
         colors = ["green"]
