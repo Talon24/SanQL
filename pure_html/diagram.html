@@ -231,8 +231,8 @@
             if (key in dict_) {
                 out.push(dict_[key])
             }
-        return out.join(sep)
         }
+        return out.join(sep)
     }
 
     function * vertica_walker(tree, parent=null, depth=0) {
@@ -243,7 +243,7 @@
         delete current["MATERIALIZE"]
         delete current["MATERIALIZE_AT_OUPUT"]
         current["__cost"] = current["COST"]
-        name = prunejoin(current, ["PATH_NAME", "EXTRA"], sep=" ")
+        name = prunejoin(current, ["PATH_NAME", "EXTRA"], sep=" - ")
         current["__label"] = name
         yield [current, parent, depth]
         if ("INPUT" in tree) {
