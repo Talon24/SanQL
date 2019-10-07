@@ -14,18 +14,23 @@ from plotly import utils
 
 from walkers.postgres import walker as pg_walker
 from walkers.vertica import walker as vert_walker
+from walkers.mysql import walker as mysql_walker
 
 
 def walker(tree):
     """Walker interface."""
     if isinstance(tree, list):
         source = "postgres"
+    elif "query_block" in tree:
+        source = "mysql"
     else:
         source = "vertica"
     if source == "postgres":
         yield from pg_walker(tree[0]["Plan"])
     elif source == "vertica":
         yield from vert_walker(tree)
+    elif source == "mysql":
+        yield from mysql_walker(tree["query_block"])
 
 
 def prettify_details(data):
