@@ -1,5 +1,6 @@
 """Start a server"""
 
+import os
 import json
 
 from flask import Flask
@@ -42,6 +43,7 @@ def sankey_page():
 
 def main():
     """main"""
+    app.secret_key = os.urandom(24)
     app.run()
 
 

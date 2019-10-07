@@ -1,0 +1,382 @@
+<head>
+    <!-- Plotly.js -->
+    <link rel="shortcut icon" href="favicon.ico">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<style>
+    /* body {background-color: powderblue;} */
+    /* h1   {color: blue;}   */
+    /* p    {color: red;} */
+    body {font-family: sans-serif;
+        background-color: #FAF9FA;}
+    form {margin: 0px}
+    #inputs {min-height: 5%}
+    #mydiv {height: 95%}
+    #radios {display: inline-block;}
+    fieldset {display: inline-block;}
+    textarea {vertical-align: top;}​
+    .main-svg {background-color: #cccccc;}
+    #myDiv > div > div > svg:nth-child(1) {background-color: #FAF9FA !important;}
+</style>
+</head>
+
+<body>
+    <div id="inputs">
+        <form id="data" action="diagram.html" method="get">
+            <textarea name="plan" id="planInput" rows="2" cols="80"></textarea>
+            <!-- <fieldset id=fields> -->
+            <div id=radios>
+                <input type="button" name="render" value="Vizualize plan"
+                 onclick="vizualizeNew()"><br />
+                <input type="radio" id="ff" name="arrangement" value="freeform">
+                <label for="ff"> Freeform </label>
+                <input type="radio" id="sn" name="arrangement" value="snap">
+                <label for="sn"> Snapping </label>
+                <input type="radio" id="pp" name="arrangement" value="perpendicular">
+                <label for="pp"> Perpendicular </label>
+            </div>
+            <!-- </fieldset> -->
+        </form>
+    </div>
+    <div id="myDiv"><!-- Plotly chart will be drawn inside this DIV --></div>
+</body>
+
+<footer>
+    <script>
+    var url_string = window.location.href;
+    var url = new URL(url_string);
+    var plan = url.searchParams.get("plan");
+    var arrangement = url.searchParams.get("mode");
+    // console.log(plan);
+    // alert(JSON.stringify(JSON.parse(plan)))
+    var json = JSON.parse(plan)
+    String.prototype.format = function () {
+        var i = 0, args = arguments;
+        return this.replace(/{}/g, function () {
+            return typeof args[i] != 'undefined' ? args[i++] : '';
+        });
+    };
+
+    function setCookie(name, value, days) { // from http://www.quirksmode.org/js/cookies.html
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            var expires = "; expires=" + date.toGMTString();
+        } else var expires = "";
+        document.cookie = name + "=" + value + expires + "; path=/";
+    }
+
+    function getCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+            }
+        return null;
+    }
+
+    window.onload = function () {
+        arrangement = url.searchParams.get("mode");
+        if (!arrangement) {
+            var arrangement = getCookie('arrangement_cookie');
+            if (arrangement){
+                if (arrangement=="freeform") document.getElementById('ff').click();
+                else if (arrangement=="snap") document.getElementById('sn').click();
+                else if (arrangement=="perpendicular") document.getElementById('pp').click();
+            } else {
+                document.getElementById('sn').click();  // default
+            }
+        }
+        try {
+            document.getElementById("planInput").value = JSON.stringify(json, null, 4)
+        } catch (SyntaxError) {
+            document.getElementById("planInput").value = plan
+        }
+        if (arrangement=="freeform") document.getElementById('ff').click();
+        else if (arrangement=="snap") document.getElementById('sn').click();
+        else if (arrangement=="perpendicular") document.getElementById('pp').click();
+    }
+
+    document.getElementById('radios').onclick = function () {
+        var ff = document.getElementById('ff');
+        var sn = document.getElementById('sn');
+        var pp = document.getElementById('pp');
+        if (ff.checked) {
+            setCookie('arrangement_cookie', ff.value, 30);
+        } else if (sn.checked) {
+            setCookie('arrangement_cookie', sn.value, 30);
+        } else if (pp.checked) {
+            setCookie('arrangement_cookie', pp.value, 30);
+        }
+    }
+
+    function selectedMode() {
+        for (thing of document.getElementsByName("arrangement")) {
+            if ((thing.checked)) {
+                return thing.value
+            }
+        }
+        return null
+    }
+    function timeformat(millisec) {
+        secs = millisec / 1000
+        hours = Math.floor(secs / 60 / 60)
+        mins = Math.floor(secs / 60 % 60)
+        secs = Math.floor(secs % 60)
+        milli = Math.round(millisec /10 % 100)
+        hours = hours.toString().padStart(2, 0)
+        mins = mins.toString().padStart(2, 0)
+        secs = secs.toString().padStart(2, 0)
+        milli = milli.toString().padStart(2, 0)
+        out = "{}:{}:{}.{}".format(hours, mins, secs, milli)
+        return out
+    }
+
+    function sizeformat(num, suffix='B') {
+        for (unit of ['', 'Ki', 'Mi', 'Gi', 'Ti', 'Pi', 'Ei', 'Zi']) {
+            if (Math.abs(num) < 1024.0) {
+                return "{} {}{}".format(num.toFixed(1), unit, suffix)
+            }
+            num /= 1024.0
+        }
+        return "{} {}{}".format(num.toFixed(1), 'Yi', suffix)
+    }
+
+    function prettify_details(data) {
+        var data = JSON.parse(JSON.stringify(data))
+        keylength = 0
+        vallength = 0
+        for (key in data) {
+            if (key.toString().startsWith("__")) {
+                delete data[key]
+                continue
+            }
+            if (Number.isInteger(data[key]) || (Number(data[key]) === data[key] && (data[key] % 1 !== 0))) {
+                // Int or float
+                intpart = Math.floor(data[key])
+                fracpart = Math.round(data[key] * 100 % 100)
+                data[key] = "{}.{}".format(intpart.toString(), fracpart.toString().padStart(2, "0"))
+            }
+            keylength = Math.max(keylength, key.toString().length)
+            vallength = Math.max(vallength, data[key].toString().length)
+        }
+        out = []
+        out.push("╔" + "═".repeat(keylength) + "╦" + "═".repeat(vallength) + "╗")
+        for (key in data) {
+            curstr = "║"
+            curstr += key.toString().padEnd(keylength)
+            curstr += "║"
+            curstr += data[key].toString().padStart(vallength)
+            curstr += "║"
+            out.push(curstr)
+        }
+        out.push("╚" + "═".repeat(keylength) + "╩" + "═".repeat(vallength) + "╝")
+        return out.join("<br />")
+        // return out.join("\n")
+    }
+
+    function * walker(tree) {
+        if (Array.isArray(tree)) {
+            yield * postgres_walker(tree[0]["Plan"])
+        } else if ("query_block" in tree) {
+            yield * mysql_walker(tree["query_block"])
+        } else {
+            yield * vertica_walker(tree)
+        }
+    }
+
+    function * postgres_walker(tree, parent=null, depth=0) {
+        var current = JSON.parse(JSON.stringify(tree))
+        delete current["Plans"]
+        if ("Actual Total Time" in current) {
+            current["__cost"] = current["Actual Total Time"]
+        } else {
+            current["__cost"] = current["Total Cost"]
+        }
+        var name = current["Node Type"]
+        if (name == "CTE Scan" && "CTE Name" in current) {
+            name += " as {}".format(current["CTE Name"])
+        } else if (("Alias" in current)) {
+            name += " as {}".format(current["Alias"])
+        } else if (("Subplan Name" in current)) {
+            name += " for {}".format(current["Subplan Name"])
+        }
+        if (depth == 0) {
+            // name += " - Total Cost: {:15,.2f}".format(current["__cost"])
+            name += " - Total Cost: {}".format(current["__cost"].toFixed(2))
+        }
+        current["__label"] = name
+        // console.log(current["__cost"]);
+
+        for (entry in current) {
+            if (entry == "Time") {
+                current[entry] = timeformat(current[entry])
+            }
+        }
+        for (entry in current) {
+            if (entry == "Space Used") {
+                space = current[entry]  // Postgres returns space in KB
+                current[entry] = "{} KiB".format(space)
+                if (space >= 1024) {
+                    current[entry] += " - Approx. {}".format(sizeformat(space*1000))
+                }
+            }
+        }
+        yield [current, parent, depth]
+        if ("Plans" in tree) {
+            for (plan of tree["Plans"]) {
+                yield * postgres_walker(plan, current, depth + 1)
+            }
+        }
+    }
+
+    function prunejoin(dict_, list_, sep=", "){
+    out = []
+        for (key of list_) {
+            if (key in dict_) {
+                out.push(dict_[key])
+            }
+        }
+        return out.join(sep)
+    }
+
+    function * vertica_walker(tree, parent=null, depth=0) {
+        var current = JSON.parse(JSON.stringify(tree))
+        delete current["INPUT"]
+        delete current["Inner"]
+        delete current["Outer"]
+        delete current["MATERIALIZE"]
+        delete current["MATERIALIZE_AT_OUPUT"]
+        current["__cost"] = current["COST"]
+        name = prunejoin(current, ["PATH_NAME", "EXTRA"], sep=" - ")
+        current["__label"] = name
+        yield [current, parent, depth]
+        if ("INPUT" in tree) {
+            yield * vertica_walker(tree["INPUT"], current, depth + 1)}
+        if ("Inner" in tree) {
+            yield * vertica_walker(tree["Inner"], current, depth + 1)}
+        if ("Outer" in tree) {
+            yield * vertica_walker(tree["Outer"], current, depth + 1)}
+    }
+
+    function * mysql_walker(tree, parent=null, depth=0) {
+        var current = JSON.parse(JSON.stringify(tree))
+        delete current["nested_loop"]
+        delete current["used_columns"]
+        costs = 0
+        for (key in current["cost_info"]) {
+            current["Cost - " + key] = current["cost_info"][key]
+            if (key.endsWith("cost")) {
+                costs += Number(current["cost_info"][key])
+            }
+        }
+        current["__cost"] = costs
+        delete current["cost_info"]
+        name = current["table_name"]
+        if (depth == 0) {
+            name += " - Total Cost: {}".format(current["__cost"].toFixed(2))
+        }
+        current["__label"] = name
+        yield [current, parent, depth]
+        if ("nested_loop" in tree){
+            for (entry of tree["nested_loop"]) {
+                yield * mysql_walker(entry["table"], current, depth + 1)}
+        }
+    }
+
+    function vizualize(json, arrangement="snap") {
+        labels = []
+        source = []
+        target = []
+        value = []
+        hovers = []
+        indexes = {}
+        indexes[JSON.stringify(null)] = 0
+        labels.push("")
+        idx = 1
+        try {
+            for ([thing, parent, _] of walker(json)) {
+                indexes[JSON.stringify(thing)] = idx
+                label = ("{}".format(thing["__label"]))
+                labels.push(label)
+                source.push(idx)
+                target.push(indexes[JSON.stringify(parent)])
+                // console.log(thing["__cost"]);
+                value.push(Math.max(thing["__cost"], 0.00001))  // 0.0 wouldn't plot
+                hovers.push(prettify_details(thing))
+                // hovers.push(thing)
+                // console.log(thing);
+                idx += 1
+            }
+        } catch (e) {
+            alert("Unsupported explain plan!")
+            throw e
+            return
+        }
+        colors = ["green"]
+        for (_ of value) {
+            colors.push("blue")
+        }
+
+        var data = {
+            ids: labels,
+            type: "sankey",
+            orientation: "h",
+            arrangement: arrangement,
+            node: {
+                pad: 15,
+                thickness: 30,
+                line: {
+                    color: "black",
+                    width: 0.5
+                },
+                label: labels,
+                color: colors
+            },
+
+            link: {
+                source: source,
+                target: target,
+                value: value,
+                label: hovers,
+                hoverlabel: {font: {
+                    family: "Courier New, monospace"}}
+                }
+            }
+
+            var data = [data]
+
+            var layout = {
+                // title: "Basic Sankey",
+                margin: {l: 0, r: 0, t: 0, b: 0},
+                font: {
+                    size: 12
+                }
+            }
+
+
+            Plotly.react('myDiv', data, layout, {showSendToCloud:false})
+    }
+
+    vizualize(json, arrangement)
+
+    function vizualizeNew() {
+        json = document.getElementById("planInput").value
+        try {
+            json = JSON.parse(json)
+        } catch (SyntaxError) {
+            alert("Invalid json!")
+            return
+        }
+        try {
+            vizualize(json, selectedMode())
+            document.getElementById("planInput").style.height=null
+        } catch (Error) {
+
+        }
+        plan = encodeURIComponent(JSON.stringify(json))
+        window.history.pushState({}, "SanQL", "diagram.html" + "?plan=" + plan + "&mode=" + selectedMode())
+    }
+    </script>
+</footer>

@@ -1,8 +1,10 @@
 """Vertica walker"""
 
+
 def prunejoin(dict_, list_, sep=", "):
     """Remove non-values from list and join it using sep."""
     return sep.join([dict_.get(i) for i in list_ if dict_.get(i)])
+
 
 def walker(tree, parent=None, depth=0):
     """Walk through the vertica explain plan."""
