@@ -23,7 +23,7 @@ class App(tkinter.Tk):
         self.report_callback_exception = self.show_error
         self.title("Explain Visualizer")
         tkinter.Label(self, text="Enter explain plan here. Prefixes e.g.\n"
-                      "Postgres: explain (format json) \t Vertica: explain json"
+                      "Postgres: explain (format json) \tVertica: explain json"
                       ).grid(row=0, column=0)
         text = tkinter.scrolledtext.ScrolledText(self)
         text.grid(row=1, column=0, columnspan=3, sticky="NEWS")
@@ -51,6 +51,19 @@ class App(tkinter.Tk):
         self.textarea = text
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
+        self.rowconfigure(2, weight=0)
+        self.rowconfigure(3, weight=0)
+        self.arrangement = tkinter.StringVar()
+        self.arrangement.set("snap")
+
+        self.checkbox = tkinter.Frame(self)
+        for txt, val in [("Freeform", "freeform"),
+                         ("Snapping", "snap"),
+                         ("Perpendicular", "perpendicular")]:
+            tkinter.Radiobutton(
+                self.checkbox, text=txt, padx=20, variable=self.arrangement,
+                value=val).pack(anchor="w", side=tkinter.LEFT)
+        self.checkbox.grid(row=3, column=0, columnspan=3, sticky="N")
         self.mainloop()
 
     def show_error(self, etype, value, trace):
@@ -84,7 +97,7 @@ class App(tkinter.Tk):
                 "Invalid input",
                 "Given input is not a json-formatted explain plan")
         else:
-            sql_sankey.generate(data)
+            sql_sankey.generate(data, mode=self.arrangement.get())
 
     def load_clipboard(self):
         """Load text from clipboard and prepare string."""
