@@ -12,6 +12,7 @@
             #submitter {float: right;}
             .jumper {display: flex;}
         </style>
+        <script type="text/javascript" src="cookies.js"></script>
     </head>
     <body>
         <a href="https://github.com/Talon24"><img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_red_aa0000.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1" style="float: right;margin: -8px"></a>
@@ -103,25 +104,6 @@
             } finally {
 
             }
-        }
-        function setCookie(name, value, days) { // from http://www.quirksmode.org/js/cookies.html
-            if (days) {
-                var date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                var expires = "; expires=" + date.toGMTString();
-            } else var expires = "";
-            document.cookie = name + "=" + value + expires + "; path=/";
-        }
-
-        function getCookie(name) {
-            var nameEQ = name + "=";
-            var ca = document.cookie.split(';');
-            for (var i = 0; i < ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-                }
-            return null;
         }
 
         window.onload = function () {
