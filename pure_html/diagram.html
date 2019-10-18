@@ -1,20 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
 <head>
-    <!-- Plotly.js -->
+    <meta charset="utf-8">
+    <title>SanQL Explain Plan Vizualizer</title>
     <link rel="shortcut icon" href="favicon.ico">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script type="text/javascript" src="functions.js"></script>
+    <script type="text/javascript" src="walkers.js"></script>
+    <script type="text/javascript" src="cookies.js"></script>
 <style>
-    /* body {background-color: powderblue;} */
-    /* h1   {color: blue;}   */
-    /* p    {color: red;} */
+    html {height: 100%;}
     body {font-family: sans-serif;
-        background-color: #FAF9FA;}
+        background-color: #FAF9FA;
+        height: 99%;
+        margin-top: 0.5%;
+        margin-bottom: 0%;}
     form {margin: 0px}
     #inputs {min-height: 5%}
-    #mydiv {height: 95%}
+    #myDiv {height: 94%;
+            margin-bottom: 0px;}
     #radios {display: inline-block;}
     fieldset {display: inline-block;}
     textarea {vertical-align: top;}​
-    .main-svg {background-color: #cccccc;}
+    .main-svg {background: #FAF9FA;}
     #myDiv > div > div > svg:nth-child(1) {background-color: #FAF9FA !important;}
 </style>
 </head>
@@ -56,26 +64,6 @@
         });
     };
 
-    function setCookie(name, value, days) { // from http://www.quirksmode.org/js/cookies.html
-        if (days) {
-            var date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            var expires = "; expires=" + date.toGMTString();
-        } else var expires = "";
-        document.cookie = name + "=" + value + expires + "; path=/";
-    }
-
-    function getCookie(name) {
-        var nameEQ = name + "=";
-        var ca = document.cookie.split(';');
-        for (var i = 0; i < ca.length; i++) {
-            var c = ca[i];
-            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-            }
-        return null;
-    }
-
     window.onload = function () {
         arrangement = url.searchParams.get("mode");
         if (!arrangement) {
@@ -108,180 +96,6 @@
             setCookie('arrangement_cookie', sn.value, 30);
         } else if (pp.checked) {
             setCookie('arrangement_cookie', pp.value, 30);
-        }
-    }
-
-    function selectedMode() {
-        for (thing of document.getElementsByName("arrangement")) {
-            if ((thing.checked)) {
-                return thing.value
-            }
-        }
-        return null
-    }
-    function timeformat(millisec) {
-        secs = millisec / 1000
-        hours = Math.floor(secs / 60 / 60)
-        mins = Math.floor(secs / 60 % 60)
-        secs = Math.floor(secs % 60)
-        milli = Math.round(millisec /10 % 100)
-        hours = hours.toString().padStart(2, 0)
-        mins = mins.toString().padStart(2, 0)
-        secs = secs.toString().padStart(2, 0)
-        milli = milli.toString().padStart(2, 0)
-        out = "{}:{}:{}.{}".format(hours, mins, secs, milli)
-        return out
-    }
-
-    function sizeformat(num, suffix='B') {
-        for (unit of ['', 'Ki', 'Mi', 'Gi', 'Ti', 'Pi', 'Ei', 'Zi']) {
-            if (Math.abs(num) < 1024.0) {
-                return "{} {}{}".format(num.toFixed(1), unit, suffix)
-            }
-            num /= 1024.0
-        }
-        return "{} {}{}".format(num.toFixed(1), 'Yi', suffix)
-    }
-
-    function prettify_details(data) {
-        var data = JSON.parse(JSON.stringify(data))
-        keylength = 0
-        vallength = 0
-        for (key in data) {
-            if (key.toString().startsWith("__")) {
-                delete data[key]
-                continue
-            }
-            if (Number.isInteger(data[key]) || (Number(data[key]) === data[key] && (data[key] % 1 !== 0))) {
-                // Int or float
-                intpart = Math.floor(data[key])
-                fracpart = Math.round(data[key] * 100 % 100)
-                data[key] = "{}.{}".format(intpart.toString(), fracpart.toString().padStart(2, "0"))
-            }
-            keylength = Math.max(keylength, key.toString().length)
-            vallength = Math.max(vallength, data[key].toString().length)
-        }
-        out = []
-        out.push("╔" + "═".repeat(keylength) + "╦" + "═".repeat(vallength) + "╗")
-        for (key in data) {
-            curstr = "║"
-            curstr += key.toString().padEnd(keylength)
-            curstr += "║"
-            curstr += data[key].toString().padStart(vallength)
-            curstr += "║"
-            out.push(curstr)
-        }
-        out.push("╚" + "═".repeat(keylength) + "╩" + "═".repeat(vallength) + "╝")
-        return out.join("<br />")
-        // return out.join("\n")
-    }
-
-    function * walker(tree) {
-        if (Array.isArray(tree)) {
-            yield * postgres_walker(tree[0]["Plan"])
-        } else if ("query_block" in tree) {
-            yield * mysql_walker(tree["query_block"])
-        } else {
-            yield * vertica_walker(tree)
-        }
-    }
-
-    function * postgres_walker(tree, parent=null, depth=0) {
-        var current = JSON.parse(JSON.stringify(tree))
-        delete current["Plans"]
-        if ("Actual Total Time" in current) {
-            current["__cost"] = current["Actual Total Time"]
-        } else {
-            current["__cost"] = current["Total Cost"]
-        }
-        var name = current["Node Type"]
-        if (name == "CTE Scan" && "CTE Name" in current) {
-            name += " as {}".format(current["CTE Name"])
-        } else if (("Alias" in current)) {
-            name += " as {}".format(current["Alias"])
-        } else if (("Subplan Name" in current)) {
-            name += " for {}".format(current["Subplan Name"])
-        }
-        if (depth == 0) {
-            // name += " - Total Cost: {:15,.2f}".format(current["__cost"])
-            name += " - Total Cost: {}".format(current["__cost"].toFixed(2))
-        }
-        current["__label"] = name
-        // console.log(current["__cost"]);
-
-        for (entry in current) {
-            if (entry == "Time") {
-                current[entry] = timeformat(current[entry])
-            }
-        }
-        for (entry in current) {
-            if (entry == "Space Used") {
-                space = current[entry]  // Postgres returns space in KB
-                current[entry] = "{} KiB".format(space)
-                if (space >= 1024) {
-                    current[entry] += " - Approx. {}".format(sizeformat(space*1000))
-                }
-            }
-        }
-        yield [current, parent, depth]
-        if ("Plans" in tree) {
-            for (plan of tree["Plans"]) {
-                yield * postgres_walker(plan, current, depth + 1)
-            }
-        }
-    }
-
-    function prunejoin(dict_, list_, sep=", "){
-    out = []
-        for (key of list_) {
-            if (key in dict_) {
-                out.push(dict_[key])
-            }
-        }
-        return out.join(sep)
-    }
-
-    function * vertica_walker(tree, parent=null, depth=0) {
-        var current = JSON.parse(JSON.stringify(tree))
-        delete current["INPUT"]
-        delete current["Inner"]
-        delete current["Outer"]
-        delete current["MATERIALIZE"]
-        delete current["MATERIALIZE_AT_OUPUT"]
-        current["__cost"] = current["COST"]
-        name = prunejoin(current, ["PATH_NAME", "EXTRA"], sep=" - ")
-        current["__label"] = name
-        yield [current, parent, depth]
-        if ("INPUT" in tree) {
-            yield * vertica_walker(tree["INPUT"], current, depth + 1)}
-        if ("Inner" in tree) {
-            yield * vertica_walker(tree["Inner"], current, depth + 1)}
-        if ("Outer" in tree) {
-            yield * vertica_walker(tree["Outer"], current, depth + 1)}
-    }
-
-    function * mysql_walker(tree, parent=null, depth=0) {
-        var current = JSON.parse(JSON.stringify(tree))
-        delete current["nested_loop"]
-        delete current["used_columns"]
-        costs = 0
-        for (key in current["cost_info"]) {
-            current["Cost - " + key] = current["cost_info"][key]
-            if (key.endsWith("cost")) {
-                costs += Number(current["cost_info"][key])
-            }
-        }
-        current["__cost"] = costs
-        delete current["cost_info"]
-        name = current["table_name"]
-        if (depth == 0) {
-            name += " - Total Cost: {}".format(current["__cost"].toFixed(2))
-        }
-        current["__label"] = name
-        yield [current, parent, depth]
-        if ("nested_loop" in tree){
-            for (entry of tree["nested_loop"]) {
-                yield * mysql_walker(entry["table"], current, depth + 1)}
         }
     }
 
@@ -355,7 +169,6 @@
                 }
             }
 
-
             Plotly.react('myDiv', data, layout, {showSendToCloud:false})
     }
 
@@ -380,3 +193,4 @@
     }
     </script>
 </footer>
+</html>
