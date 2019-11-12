@@ -1,0 +1,51 @@
+html {height: 100%;
+      margin: 0px;
+  padding: 0px;}
+body {font-family: sans-serif;
+    background-color: #FAF9FA;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+#welcome {
+    display: block;
+    margin-top: 0px;
+    /* padding: 0px; */
+    border: 0px;
+}
+#running {
+    display: none;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+.body {
+    padding: 5px;
+    margin-top: 0.5%;
+    height: 94%;
+}
+form {margin: 0px}
+#inputs {min-height: 5%}
+#myDiv {
+    height: 100%;
+    /* display: flex; */
+    margin: 0px;
+    padding: 0px;}
+#radios {display: inline-block;}
+fieldset {display: inline-block;}
+textarea {vertical-align: top;}​
+.main-svg {background: #FAF9FA;}
+/* .plot-container {
+    height:100%;
+}
+.svg-containter {
+    height: 100%;
+} */
+fieldset {display: inline-block;}
+table, th, td {border: 1px solid black;}
+#submitter {float: right;}
+.jumper {display: flex;}
+.js-plotly-plot,
+.plot-container {
+      height: 44vh
+}
+#myDiv > div > div > svg:nth-child(1) {background-color: #FAF9FA !important;}
