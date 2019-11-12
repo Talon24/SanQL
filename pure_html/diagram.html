@@ -261,12 +261,21 @@
     arrangement = getCookie("arrangement_cookie")
     // alert(arrangement)
     if (arrangement){
-                if (arrangement=="freeform") document.getElementById('ff').click();
-                else if (arrangement=="snap") document.getElementById('sn').click();
-                else if (arrangement=="perpendicular") document.getElementById('pp').click();
-            } else {
-                document.getElementById('sn').click();  // default
-            }
+        if (arrangement=="freeform") {
+            document.getElementById('ff').click();
+            document.getElementById('ff1').click();
+        }
+        else if (arrangement=="snap") {
+            document.getElementById('sn').click();
+            document.getElementById('sn1').click();
+        }
+        else if (arrangement=="perpendicular") {
+            document.getElementById('pp').click();
+            document.getElementById('pp1').click();
+        }
+    } else {
+        document.getElementById('sn').click();  // default
+    }
 
     function vizualizeNew() {
         welcome = document.getElementById("welcome")
