@@ -143,6 +143,18 @@
         });
     };
 
+    document.getElementById('fields').onclick = function () {
+        var ff = document.getElementById('ff1');
+        var sn = document.getElementById('sn1');
+        var pp = document.getElementById('pp1');
+        if (ff.checked) {
+            setCookie('arrangement_cookie', ff.value, 30);
+        } else if (sn.checked) {
+            setCookie('arrangement_cookie', sn.value, 30);
+        } else if (pp.checked) {
+            setCookie('arrangement_cookie', pp.value, 30);
+        }
+    }
     document.getElementById('radios').onclick = function () {
         var ff = document.getElementById('ff');
         var sn = document.getElementById('sn');
