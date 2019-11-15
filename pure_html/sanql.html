@@ -14,10 +14,13 @@
 <body>
     <div id="welcome" class="body">
         <a href="https://github.com/Talon24"><img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_red_aa0000.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1" style="float: right;margin: -8px"></a>
+        <span class="heading">
+            <h1>SanQL Explain Plan Vizualizer</h1>
+        </span>
         <form class="jumper" action="diagram.html" method="get">
             <div class="">
 
-                <h1>SanQL Explain Plan Vizualizer <input type="button" id="submitter" name="submitter" value="Vizualize plan" onclick="vizualizeNew()" /></h1>
+                <!-- <h1><input type="button" id="submitter" name="submitter" value="Vizualize plan" onclick="vizualizeNew()" /></h1> -->
                 <textarea id=basePlanInput rows="20" cols="100" name=plan></textarea>
                 <br>
                 <fieldset id=fields>
@@ -28,6 +31,7 @@
                     <input type="radio" id="pp1" name="arrangement" value="perpendicular">
                     <label for="pp"> Perpendicular </label>
                 </fieldset>
+                <input type="button" id="submitter" name="submitter" value="Vizualize plan" onclick="vizualizeNew()" style="margin-top:5px; font-size: 1.3em;"/>
             </div>
         </form>
         <p>Paste your json-formatted explain plan in this text field and hit the
@@ -145,9 +149,10 @@
             throw e
             return
         }
-        colors = ["green"]
+        // #D58A15 #6d00cc #2C8F30
+        colors = ["#2C8F30"] // green
         for (_ of value) {
-            colors.push("blue")
+            colors.push("#D58A15") // blue
         }
 
         var data = {

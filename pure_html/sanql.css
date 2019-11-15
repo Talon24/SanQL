@@ -1,51 +1,128 @@
-html {height: 100%;
-      margin: 0px;
-  padding: 0px;}
-body {font-family: sans-serif;
-    background-color: #FAF9FA;
+html {
     height: 100%;
     margin: 0px;
     padding: 0px;
 }
+
+body {
+    font-family: sans-serif;
+    /* background-color: #FAF9FA; */
+    /* background-color: #6d00cc; */
+    background-color: #333;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
 #welcome {
     display: block;
     margin-top: 0px;
     /* padding: 0px; */
     border: 0px;
 }
+
 #running {
     display: none;
     margin-top: 0px;
     margin-bottom: 0px;
 }
+
 .body {
     padding: 5px;
     margin-top: 0.5%;
     height: 94%;
+    color: #eee;
 }
-form {margin: 0px}
-#inputs {min-height: 5%}
+
+form {
+    margin: 0px
+}
+
+#inputs {
+    min-height: 5%;
+    background-color: #6d00cc;
+    box-shadow: 0 -5px 15px 0px rgba(0,0,0, 0.5) inset;
+}
+
 #myDiv {
     height: 100%;
     /* display: flex; */
     margin: 0px;
-    padding: 0px;}
-#radios {display: inline-block;}
-fieldset {display: inline-block;}
-textarea {vertical-align: top;}​
-.main-svg {background: #FAF9FA;}
+    padding: 0px;
+}
+
+#radios {
+    display: inline-block;
+}
+
+fieldset {
+    display: inline-block;
+}
+
+textarea {
+    vertical-align: top;
+}
+
+​
+
+/* .main-svg {background: #FAF9FA;} */
+.main-svg {
+    background-color: rgba(0, 0, 0, 0);
+}
+
 /* .plot-container {
     height:100%;
 }
 .svg-containter {
     height: 100%;
 } */
-fieldset {display: inline-block;}
-table, th, td {border: 1px solid black;}
-#submitter {float: right;}
-.jumper {display: flex;}
+fieldset {
+    display: inline-block;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+#submitter {
+    float: right;
+}
+
+.jumper {
+    display: flex;
+    /* background-color: #6d00cc; */
+}
+
+span.heading {
+    background-color: #6d00cc;
+    display: block;
+    padding: 3px;
+    margin-right: -5px;
+    margin-left: -5px;
+    margin-top: -5px;
+    padding-left: 20px;
+    box-shadow: 0 -5px 15px 0px rgba(0,0,0, 0.5) inset;
+}
+
+
 .js-plotly-plot,
 .plot-container {
-      height: 44vh
+    height: 44vh
 }
-#myDiv > div > div > svg:nth-child(1) {background-color: #FAF9FA !important;}
+
+/* #myDiv > div > div > svg:nth-child(1) {background-color: #FAF9FA !important;} */
+#myDiv>div>div>svg:nth-child(1) {
+    background-color: rgba(0, 0, 0, 0) !important;
+}
+
+textpath.node-label-text-path {
+    fill: rgb(255, 255, 255) !important;
+    /* fill: #4CAF50 !important; */
+    text-shadow: rgb(0, 0, 0) -1px 1px 1px, rgb(0, 0, 0) 1px 1px 1px, rgb(0, 0, 0) 1px -1px 1px, rgb(0, 0, 0) -1px -1px 1px;
+    /* text-shadow: #6d00cc -1px 1px 1px, #6d00cc 1px 1px 1px, #6d00cc 1px -1px 1px, #6d00cc -1px -1px 1px; */
+}
+
+path.sankey-link {
+    fill: white !important;
+    fill-opacity: 0.5 !important;
+}
