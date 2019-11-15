@@ -28,8 +28,9 @@ body {
 }
 
 .body {
-    padding: 5px;
-    margin-top: 0.5%;
+    padding: 0px;
+    /* margin-top: 0.5%; */
+    margin: 0px;
     height: 94%;
     color: #eee;
 }
@@ -40,10 +41,9 @@ form {
 
 #inputs {
     min-height: 5%;
-    margin-right: -5px;
-    margin-left: -5px;
-    padding-left: 5px;
-    padding-right: 5px;
+    /* margin-right: -5px;
+    margin-left: -5px; */
+    padding: 5px;
     background-color: #6d00cc;
     box-shadow: 0 -5px 15px 0px rgba(0,0,0, 0.5) inset;
 }
@@ -53,6 +53,8 @@ form {
     /* display: flex; */
     margin: 0px;
     padding: 0px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 #radios {
