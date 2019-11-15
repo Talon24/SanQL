@@ -13,7 +13,7 @@
 
 <body>
     <div id="welcome" class="body">
-        <a href="https://github.com/Talon24"><img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_red_aa0000.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1" style="float: right;margin: -8px"></a>
+        <a href="https://github.com/Talon24"><img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_red_aa0000.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1" style="float: right;margin: -5px;z-index: 999;" autofocus></a>
         <span class="heading">
             <h1>SanQL Explain Plan Vizualizer</h1>
         </span>
@@ -149,10 +149,10 @@
             throw e
             return
         }
-        // #D58A15 #6d00cc #2C8F30
-        colors = ["#2C8F30"] // green
+        // #D58A15 #6d00cc #2C8F30 green blue
+        colors = ["#2C8F30"]
         for (_ of value) {
-            colors.push("#D58A15") // blue
+            colors.push("#D58A15")
         }
 
         var data = {
@@ -194,35 +194,6 @@
 
         Plotly.react('myDiv', data, layout, {showSendToCloud:false})
     }
-    // vizualize([], selectedMode())
-
-    // window.onload = function () {
-    //     try {
-    //         var json = JSON.parse(json)
-    //     } catch (SyntaxError) {
-    //         //alert("Invalid json!")
-    //     }
-    //     arrangement = url.searchParams.get("mode");
-    //     if (!arrangement) {
-    //         var arrangement = getCookie('arrangement_cookie');
-    //         if (arrangement){
-    //             if (arrangement=="freeform") document.getElementById('ff').click();
-    //             else if (arrangement=="snap") document.getElementById('sn').click();
-    //             else if (arrangement=="perpendicular") document.getElementById('pp').click();
-    //         } else {
-    //             document.getElementById('sn').click();  // default
-    //         }
-    //     }
-    //     try {
-    //         document.getElementById("planInput").value = JSON.stringify(json, null, 4)
-    //     } catch (SyntaxError) {
-    //         document.getElementById("planInput").value = plan
-    //     }
-    //     if (arrangement=="freeform") document.getElementById('ff').click();
-    //     else if (arrangement=="snap") document.getElementById('sn').click();
-    //     else if (arrangement=="perpendicular") document.getElementById('pp').click();
-    // }
-    // vizualize(json, arrangement)
     arrangement = getCookie("arrangement_cookie")
     // alert(arrangement)
     if (arrangement){
