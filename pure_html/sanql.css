@@ -40,6 +40,10 @@ form {
 
 #inputs {
     min-height: 5%;
+    margin-right: -5px;
+    margin-left: -5px;
+    padding-left: 5px;
+    padding-right: 5px;
     background-color: #6d00cc;
     box-shadow: 0 -5px 15px 0px rgba(0,0,0, 0.5) inset;
 }
