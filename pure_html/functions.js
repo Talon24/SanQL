@@ -10,6 +10,7 @@ function selectedMode() {
             if ((thing.checked)) {
                 return thing.value
             }
+        }
     }
     return null
 }
