@@ -14,6 +14,10 @@ body {
     padding: 0px;
 }
 
+#basePlanInput {
+    width: 100%;
+}
+
 #welcome {
     display: block;
     margin-top: 0px;

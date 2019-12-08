@@ -2,6 +2,8 @@
 <html lang="en" dir="ltr">
 <head>
     <meta charset="utf-8">
+    <meta name="description" content="A visualizing tool for SQL explain plans.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SanQL Explain Plan Vizualizer</title>
     <link rel="shortcut icon" href="favicon.ico"></link>
     <link rel="stylesheet" type="text/css" href="sanql.css"></link>
@@ -14,15 +16,19 @@
 
 <body>
     <div id="welcome" class="body">
-        <a href="https://github.com/Talon24"><img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_red_aa0000.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1" style="float: right;margin: -5px;z-index: 999;" autofocus></a>
+        <a href="https://github.com/Talon24"><img width="149" height="149"
+            src="https://github.blog/wp-content/uploads/2008/12/forkme_right_red_aa0000.png?resize=149%2C149"
+            class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"
+            style="float: right;margin: -5px;z-index: 999;" autofocus></a>
         <span class="heading">
             <h1>SanQL Explain Plan Vizualizer</h1>
         </span>
         <form class="jumper" action="diagram.html" method="get">
             <div class="">
 
-                <!-- <h1><input type="button" id="submitter" name="submitter" value="Vizualize plan" onclick="vizualizeNew()" /></h1> -->
-                <textarea id=basePlanInput rows="20" cols="100" name=plan></textarea>
+                <!-- <h1><input type="button" id="submitter"
+                name="submitter" value="Vizualize plan" onclick="vizualizeNew()" /></h1> -->
+                <textarea id=basePlanInput rows="20" name=plan></textarea>
                 <br>
                 <fieldset id=fields>
                     <input type="radio" id="ff1" name="arrangement" value="freeform">
@@ -32,7 +38,8 @@
                     <input type="radio" id="pp1" name="arrangement" value="perpendicular">
                     <label for="pp"> Perpendicular </label>
                 </fieldset>
-                <input type="button" id="submitter" name="submitter" value="Vizualize plan" onclick="vizualizeNew()" style="margin-top:5px; font-size: 1.3em;"/>
+                <input type="button" id="submitter" name="submitter" value="Vizualize plan"
+                onclick="vizualizeNew()" style="margin-top:5px; font-size: 1.3em;"/>
             </div>
         </form>
         <p>Paste your json-formatted explain plan in this text field and hit the
@@ -60,7 +67,11 @@
                 <td><pre>EXPLAIN FORMT=JSON</pre></td>
             </tr>
         </table>
+        If you'd like to see more plans supported, visit my github-page and
+        open an issue. Please attach one or more explain plans with your request.
         <p>A cookie is used that saves the arrangement settings.</p>
+        <p>If you are using NoScript or similar addons, you'll need to allow
+            the loading of JavaScript from <tt>cdn.plot.ly</tt> .</p>
     </div>
     <div id="running" class="body">
         <div id="inputs">
@@ -122,25 +133,25 @@
     }
 
     function vizualize(json, arrangement="snap") {
-        labels = []
-        source = []
-        target = []
-        value = []
-        hovers = []
-        indexes = {}
-        indexes[JSON.stringify(null)] = 0
-        labels.push("")
-        idx = 1
+        labels = [];
+        source = [];
+        target = [];
+        value = [];
+        hovers = [];
+        indexes = {};
+        indexes[JSON.stringify(null)] = 0;
+        labels.push("");
+        idx = 1;
         try {
             for ([thing, parent, _] of walker(json)) {
-                indexes[JSON.stringify(thing)] = idx
-                label = ("{}".format(thing["__label"]))
-                labels.push(label)
-                source.push(idx)
-                target.push(indexes[JSON.stringify(parent)])
+                indexes[JSON.stringify(thing)] = idx;
+                label = ("{}".format(thing["__label"]));
+                labels.push(label),
+                source.push(idx);
+                target.push(indexes[JSON.stringify(parent)]);
                 // console.log(thing["__cost"]);
-                value.push(Math.max(thing["__cost"], 0.00001))  // 0.0 wouldn't plot
-                hovers.push(prettify_details(thing))
+                value.push(Math.max(thing["__cost"], 0.00001));  // 0.0 wouldn't plot
+                hovers.push(prettify_details(thing));
                 // hovers.push(thing)
                 // console.log(thing);
                 idx += 1
@@ -151,9 +162,9 @@
             return
         }
         // #D58A15 #6d00cc #2C8F30 green blue
-        colors = ["#2C8F30"]
+        colors = ["#2C8F30"];
         for (_ of value) {
-            colors.push("#D58A15")
+            colors.push("#D58A15");
         }
 
         var data = {
@@ -193,9 +204,9 @@
             }
         }
 
-        Plotly.react('myDiv', data, layout, {showSendToCloud:false})
+        Plotly.react('myDiv', data, layout, {showSendToCloud:false});
     }
-    arrangement = getCookie("arrangement_cookie")
+    arrangement = getCookie("arrangement_cookie");
     // alert(arrangement)
     if (arrangement){
         if (arrangement=="freeform") {
@@ -215,31 +226,36 @@
     }
 
     function vizualizeNew() {
-        welcome = document.getElementById("welcome")
-        running = document.getElementById("running")
+        welcome = document.getElementById("welcome");
+        running = document.getElementById("running");
         if (window.getComputedStyle(welcome).display === "block") {
-            json = document.getElementById("basePlanInput").value
+            json = document.getElementById("basePlanInput").value;
         } else {
-            json = document.getElementById("planInput").value
+            json = document.getElementById("planInput").value;
         }
         try {
-            json = JSON.parse(json)
+            json = JSON.parse(json);
         } catch (SyntaxError) {
-            alert("Invalid json!")
+            alert("Invalid json!");
             return
         }
         try {
             running.style.display = "block";
             vizualize(json, selectedMode())  // cannot be when display non
             welcome.style.display = "none";
-            document.getElementById("planInput").style.height=null
+            document.getElementById("planInput").style.height=null;
         } catch (Error) {
             running.style.display = "none";
         }
-        document.getElementById("planInput").value = JSON.stringify(json, null, 4)
+        document.getElementById("planInput").value = JSON.stringify(json, null, 4);
         welcome.style.display = "none";
         running.style.display = "block";
-        arrangement = getCookie("arrangement_cookie")
+        arrangement = getCookie("arrangement_cookie");
+        if (document.getElementById('myDiv').childNodes.length != 2) {
+            // Plotly didn't load
+            (document.getElementById('myDiv').innerText = "" +
+            "Couldn't connect to plot.ly. Did your browser block javascript loading?";)
+        }
         // alert(arrangement)
         if (arrangement){
                     if (arrangement=="freeform") document.getElementById('ff1').click();
