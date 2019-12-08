@@ -241,7 +241,7 @@
         }
         try {
             running.style.display = "block";
-            vizualize(json, selectedMode())  // cannot be when display non
+            vizualize(json, selectedMode());  // cannot be when display non
             welcome.style.display = "none";
             document.getElementById("planInput").style.height=null;
         } catch (Error) {
@@ -254,7 +254,7 @@
         if (document.getElementById('myDiv').childNodes.length != 2) {
             // Plotly didn't load
             (document.getElementById('myDiv').innerText = "" +
-            "Couldn't connect to plot.ly. Did your browser block javascript loading?";)
+            "Couldn't connect to plot.ly. Did your browser block javascript loading?");
         }
         // alert(arrangement)
         if (arrangement){
