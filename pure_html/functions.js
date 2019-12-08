@@ -1,8 +1,15 @@
 function selectedMode() {
-    for (thing of document.getElementsByName("arrangement")) {
-        if ((thing.checked)) {
-            return thing.value
+    if (window.getComputedStyle(document.getElementById("welcome")).display === "block") {
+        for (thing of document.getElementsByName("arrangement1")) {
+            if ((thing.checked)) {
+                return thing.value
+            }
         }
+    } else {
+        for (thing of document.getElementsByName("arrangement")) {
+            if ((thing.checked)) {
+                return thing.value
+            }
     }
     return null
 }
