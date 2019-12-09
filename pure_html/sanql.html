@@ -111,25 +111,25 @@
         var ff = document.getElementById('ff1');
         var sn = document.getElementById('sn1');
         var pp = document.getElementById('pp1');
-        if (ff.checked) {
-            setCookie('arrangement_cookie', ff.value, 30);
-        } else if (sn.checked) {
-            setCookie('arrangement_cookie', sn.value, 30);
-        } else if (pp.checked) {
-            setCookie('arrangement_cookie', pp.value, 30);
-        }
+        // if (ff.checked) {
+        //     setCookie('arrangement_cookie', ff.value, 30);
+        // } else if (sn.checked) {
+        //     setCookie('arrangement_cookie', sn.value, 30);
+        // } else if (pp.checked) {
+        //     setCookie('arrangement_cookie', pp.value, 30);
+        // }
     }
     document.getElementById('radios').onclick = function () {
         var ff = document.getElementById('ff');
         var sn = document.getElementById('sn');
         var pp = document.getElementById('pp');
-        if (ff.checked) {
-            setCookie('arrangement_cookie', ff.value, 30);
-        } else if (sn.checked) {
-            setCookie('arrangement_cookie', sn.value, 30);
-        } else if (pp.checked) {
-            setCookie('arrangement_cookie', pp.value, 30);
-        }
+        // if (ff.checked) {
+        //     setCookie('arrangement_cookie', ff.value, 30);
+        // } else if (sn.checked) {
+        //     setCookie('arrangement_cookie', sn.value, 30);
+        // } else if (pp.checked) {
+        //     setCookie('arrangement_cookie', pp.value, 30);
+        // }
     }
 
     function vizualize(json, arrangement="snap") {
@@ -206,24 +206,27 @@
 
         Plotly.react('myDiv', data, layout, {showSendToCloud:false});
     }
-    arrangement = getCookie("arrangement_cookie");
-    // alert(arrangement)
-    if (arrangement){
-        if (arrangement=="freeform") {
-            document.getElementById('ff').click();
-            document.getElementById('ff1').click();
-        }
-        else if (arrangement=="snap") {
-            document.getElementById('sn').click();
-            document.getElementById('sn1').click();
-        }
-        else if (arrangement=="perpendicular") {
-            document.getElementById('pp').click();
-            document.getElementById('pp1').click();
-        }
-    } else {
-        document.getElementById('sn').click();  // default
-    }
+
+    document.getElementById('sn').click();  // default
+    document.getElementById('sn1').click();
+    // arrangement = getCookie("arrangement_cookie");
+    // // alert(arrangement)
+    // if (arrangement){
+    //     if (arrangement=="freeform") {
+    //         document.getElementById('ff').click();
+    //         document.getElementById('ff1').click();
+    //     }
+    //     else if (arrangement=="snap") {
+    //         document.getElementById('sn').click();
+    //         document.getElementById('sn1').click();
+    //     }
+    //     else if (arrangement=="perpendicular") {
+    //         document.getElementById('pp').click();
+    //         document.getElementById('pp1').click();
+    //     }
+    // } else {
+    //     document.getElementById('sn').click();  // default
+    // }
 
     function vizualizeNew() {
         welcome = document.getElementById("welcome");
@@ -250,20 +253,20 @@
         document.getElementById("planInput").value = JSON.stringify(json, null, 4);
         welcome.style.display = "none";
         running.style.display = "block";
-        arrangement = getCookie("arrangement_cookie");
+        // arrangement = getCookie("arrangement_cookie");
         if (document.getElementById('myDiv').childNodes.length != 2) {
             // Plotly didn't load
             (document.getElementById('myDiv').innerText = "" +
             "Couldn't connect to plot.ly. Did your browser block javascript loading?");
         }
         // alert(arrangement)
-        if (arrangement){
-                    if (arrangement=="freeform") document.getElementById('ff1').click();
-                    else if (arrangement=="snap") document.getElementById('sn1').click();
-                    else if (arrangement=="perpendicular") document.getElementById('pp1').click();
-                } else {
-                    document.getElementById('sn1').click();  // default
-                }
+        // if (arrangement){
+        //             if (arrangement=="freeform") document.getElementById('ff1').click();
+        //             else if (arrangement=="snap") document.getElementById('sn1').click();
+        //             else if (arrangement=="perpendicular") document.getElementById('pp1').click();
+        //         } else {
+        //             document.getElementById('sn1').click();  // default
+        //         }
         // plan = encodeURIComponent(JSON.stringify(json))
         // window.history.pushState({}, "SanQL", "diagram.html" + "?plan=" + plan + "&mode=" + selectedMode())
     }
