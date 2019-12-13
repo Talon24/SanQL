@@ -24,6 +24,7 @@ class App(tkinter.Tk):
         self.title("Explain Visualizer")
         tkinter.Label(self, text="Enter explain plan here. Prefixes e.g.\n"
                       "Postgres: explain (format json) \tVertica: explain json"
+                      "\nMysql: EXPLAIN FORMAT=JSON"
                       ).grid(row=0, column=0)
         text = tkinter.scrolledtext.ScrolledText(self)
         text.grid(row=1, column=0, columnspan=3, sticky="NEWS")
