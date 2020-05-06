@@ -7,7 +7,7 @@
 # SanQL
 Visualize SQL explain plans with a sankey diagram.
 
-[Use it online!](https://sanql-tool.tumblr.com)
+[Use it online!](https://jsyn.eu/sanql.html)
 
 Convert an explain plan from a database into a graph that lets you easily see which steps produce costs and where optimization might be useful.
 ![Explain-Plan shown as a sankey-diagram](images/sankey.png)
