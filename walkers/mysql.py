@@ -10,6 +10,8 @@ def walker(tree, parent=None, depth=0):
     """Walk through the vertica explain plan."""
     current = tree.copy()
     current.pop("nested_loop", None)
+    current.pop("duplicates_removal", None)
+    current.pop("ordering_operation", None)
     # current.pop("Inner", None)
     # current.pop("Outer", None)
     # current.pop("MATERIALIZE", None)
@@ -30,7 +32,12 @@ def walker(tree, parent=None, depth=0):
     if depth == 0:
         name += " - Total Cost: {:15,.2f}".format(current["__cost"])
     current["__label"] = name
+    current.pop("ordering_operation", None)
+    current.pop("duplicates_removal", None)
     yield current, parent, depth
-    if "nested_loop" in tree:
-        for entry in tree["nested_loop"]:
+    container = tree
+    container = container.get("ordering_operation", container)
+    container = container.get("duplicates_removal", container)
+    if "nested_loop" in container:
+        for entry in container["nested_loop"]:
             yield from walker(entry["table"], current, depth + 1)

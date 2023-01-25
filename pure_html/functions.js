@@ -1,19 +1,16 @@
 function selectedMode() {
-    if (window.getComputedStyle(document.getElementById("welcome")).display === "block") {
-        for (thing of document.getElementsByName("arrangement1")) {
-            if ((thing.checked)) {
-                return thing.value
-            }
-        }
-    } else {
-        for (thing of document.getElementsByName("arrangement")) {
-            if ((thing.checked)) {
-                return thing.value
-            }
+    for (thing of document.getElementsByName("arrangement")) {
+        if ((!isHidden(thing) && thing.checked)) {
+            return thing.value
         }
     }
     return null
 }
+
+function isHidden(el) {
+    return (el.offsetParent === null)
+}
+
 function timeformat(millisec) {
     secs = millisec / 1000
     hours = Math.floor(secs / 60 / 60)
@@ -54,19 +51,27 @@ function prettify_details(data) {
             data[key] = "{}.{}".format(intpart.toString(), fracpart.toString().padStart(2, "0"))
         }
         keylength = Math.max(keylength, key.toString().length)
-        vallength = Math.max(vallength, data[key].toString().length)
+        vallength = Math.min(Math.max(vallength, data[key].toString().length), 200)
+        data[key] = data[key].toString().match(/.{1,200}/g)
+        // if (typeof data[key] === "object"){
+        //     data[key] = [JSON.stringify(data[key])]
+        // }
+        // else {
+        //     data[key] = data[key].toString().match(/.{1,200}/g)
+        // }
     }
     out = []
     out.push("╔" + "═".repeat(keylength) + "╦" + "═".repeat(vallength) + "╗")
     for (key in data) {
-        curstr = "║"
-        curstr += key.toString().padEnd(keylength)
-        curstr += "║"
-        curstr += data[key].toString().padStart(vallength)
-        curstr += "║"
-        out.push(curstr)
+        for (index in data[key]){
+            curstr = "║"
+            curstr += key.toString().padEnd(keylength)
+            curstr += "║"
+            curstr += data[key][index].toString().padStart(vallength)
+            curstr += "║"
+            out.push(curstr)
+        }
     }
     out.push("╚" + "═".repeat(keylength) + "╩" + "═".repeat(vallength) + "╝")
     return out.join("<br />")
-    // return out.join("\n")
 }

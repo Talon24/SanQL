@@ -25,21 +25,18 @@
         </span>
         <form class="jumper" action="diagram.html" method="get">
             <div class="">
-
-                <!-- <h1><input type="button" id="submitter"
-                name="submitter" value="Vizualize plan" onclick="vizualizeNew()" /></h1> -->
-                <textarea id=basePlanInput rows="20" name=plan></textarea>
+                <textarea id=basePlanInput rows="20" cols="100" name=plan></textarea>
                 <br>
                 <fieldset id=fields>
-                    <input type="radio" id="ff1" name="arrangement1" value="freeform">
+                    <input type="radio" id="ff1" name="arrangement" value="freeform">
                     <label for="ff"> Freeform </label>
-                    <input type="radio" id="sn1" name="arrangement1" value="snap">
+                    <input type="radio" id="sn1" name="arrangement" value="snap">
                     <label for="sn"> Snapping </label>
-                    <input type="radio" id="pp1" name="arrangement1" value="perpendicular">
+                    <input type="radio" id="pp1" name="arrangement" value="perpendicular">
                     <label for="pp"> Perpendicular </label>
                 </fieldset>
                 <input type="button" id="submitter" name="submitter" value="Vizualize plan"
-                onclick="vizualizeNew()" style="margin-top:5px; font-size: 1.3em;"/>
+                onclick="vizualizeNew()" style="margin-top:5px; font-size: 1.3em;" />
             </div>
         </form>
         <p>Paste your json-formatted explain plan in this text field and hit the
@@ -146,7 +143,7 @@
             for ([thing, parent, _] of walker(json)) {
                 indexes[JSON.stringify(thing)] = idx;
                 label = ("{}".format(thing["__label"]));
-                labels.push(label),
+                labels.push(label);
                 source.push(idx);
                 target.push(indexes[JSON.stringify(parent)]);
                 // console.log(thing["__cost"]);
@@ -209,24 +206,6 @@
 
     document.getElementById('sn').click();  // default
     document.getElementById('sn1').click();
-    // arrangement = getCookie("arrangement_cookie");
-    // // alert(arrangement)
-    // if (arrangement){
-    //     if (arrangement=="freeform") {
-    //         document.getElementById('ff').click();
-    //         document.getElementById('ff1').click();
-    //     }
-    //     else if (arrangement=="snap") {
-    //         document.getElementById('sn').click();
-    //         document.getElementById('sn1').click();
-    //     }
-    //     else if (arrangement=="perpendicular") {
-    //         document.getElementById('pp').click();
-    //         document.getElementById('pp1').click();
-    //     }
-    // } else {
-    //     document.getElementById('sn').click();  // default
-    // }
 
     function vizualizeNew() {
         welcome = document.getElementById("welcome");

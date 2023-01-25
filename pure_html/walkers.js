@@ -89,10 +89,12 @@ function * mysql_walker(tree, parent=null, depth=0) {
     costs = 0
     for (key in current["cost_info"]) {
         current["Cost - " + key] = current["cost_info"][key]
-        if (key.endsWith("cost")) {
-            costs += Number(current["cost_info"][key])
-        }
+        // if (key.endsWith("cost")) {
+        //     costs += Number(current["cost_info"][key])
+        // }
     }
+    if ("cost_info" in current && "query_cost" in current["cost_info"]) { costs = Number(current["cost_info"]["query_cost"])}
+    if ("read_cost" in current["cost_info"]) { costs += Number(current["cost_info"]["read_cost"])}
     current["__cost"] = costs
     delete current["cost_info"]
     name = current["table_name"]
@@ -100,9 +102,14 @@ function * mysql_walker(tree, parent=null, depth=0) {
         name += " - Total Cost: {}".format(current["__cost"].toFixed(2))
     }
     current["__label"] = name
+    delete current["ordering_operation"]
+    delete current["duplicates_removal"]
     yield [current, parent, depth]
-    if ("nested_loop" in tree){
-        for (entry of tree["nested_loop"]) {
+    container = tree
+    if ("ordering_operation" in container) {container = container["ordering_operation"]}
+    if ("duplicates_removal" in container) {container = container["duplicates_removal"]}
+    if ("nested_loop" in container){
+        for (entry of container["nested_loop"]) {
             yield * mysql_walker(entry["table"], current, depth + 1)}
     }
 }
