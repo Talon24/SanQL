@@ -1,6 +1,6 @@
 function selectedMode() {
     for (thing of document.getElementsByName("arrangement")) {
-        if ((!isHidden(thing) && thing.checked)) {
+        if ((isVisible(thing) && thing.checked)) {
             return thing.value
         }
     }
@@ -10,6 +10,7 @@ function selectedMode() {
 function isHidden(el) {
     return (el.offsetParent === null)
 }
+function isVisible(el) { return !isHidden(el)}
 
 function timeformat(millisec) {
     secs = millisec / 1000
@@ -52,7 +53,7 @@ function prettify_details(data) {
         }
         keylength = Math.max(keylength, key.toString().length)
         vallength = Math.min(Math.max(vallength, data[key].toString().length), 200)
-        data[key] = data[key].toString().match(/.{1,200}/g)
+        data[key] = data[key].toString().match(/.{1,200}/g)  // Split into blocks of up to 200 chars
         // if (typeof data[key] === "object"){
         //     data[key] = [JSON.stringify(data[key])]
         // }
