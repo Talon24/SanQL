@@ -51,7 +51,7 @@ form {
     margin-left: -5px; */
     padding: 5px;
     background-color: #6d00cc;
-    box-shadow: 0 -5px 15px 0px rgba(0,0,0, 0.5) inset;
+    box-shadow: 0 -5px 15px 0px rgba(0, 0, 0, 0.5) inset;
 }
 
 #myDiv {
@@ -92,7 +92,9 @@ fieldset {
     display: inline-block;
 }
 
-table, th, td {
+table,
+th,
+td {
     border: 1px solid black;
 }
 
@@ -113,7 +115,7 @@ span.heading {
     margin-left: -5px;
     margin-top: -5px;
     padding-left: 20px;
-    box-shadow: 0 -5px 15px 0px rgba(0,0,0, 0.5) inset;
+    box-shadow: 0 -5px 15px 0px rgba(0, 0, 0, 0.5) inset;
 }
 
 

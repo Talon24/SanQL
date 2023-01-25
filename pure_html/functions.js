@@ -10,14 +10,14 @@ function selectedMode() {
 function isHidden(el) {
     return (el.offsetParent === null)
 }
-function isVisible(el) { return !isHidden(el)}
+function isVisible(el) { return !isHidden(el) }
 
 function timeformat(millisec) {
     secs = millisec / 1000
     hours = Math.floor(secs / 60 / 60)
     mins = Math.floor(secs / 60 % 60)
     secs = Math.floor(secs % 60)
-    milli = Math.round(millisec /10 % 100)
+    milli = Math.round(millisec / 10 % 100)
     hours = hours.toString().padStart(2, 0)
     mins = mins.toString().padStart(2, 0)
     secs = secs.toString().padStart(2, 0)
@@ -26,7 +26,7 @@ function timeformat(millisec) {
     return out
 }
 
-function sizeformat(num, suffix='B') {
+function sizeformat(num, suffix = 'B') {
     for (unit of ['', 'Ki', 'Mi', 'Gi', 'Ti', 'Pi', 'Ei', 'Zi']) {
         if (Math.abs(num) < 1024.0) {
             return "{} {}{}".format(num.toFixed(1), unit, suffix)
@@ -64,7 +64,7 @@ function prettify_details(data) {
     out = []
     out.push("╔" + "═".repeat(keylength) + "╦" + "═".repeat(vallength) + "╗")
     for (key in data) {
-        for (index in data[key]){
+        for (index in data[key]) {
             curstr = "║"
             curstr += key.toString().padEnd(keylength)
             curstr += "║"
