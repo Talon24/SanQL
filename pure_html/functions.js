@@ -45,11 +45,17 @@ function prettify_details(data) {
             delete data[key];
             continue;
         }
-        if (Number.isInteger(data[key]) || (Number(data[key]) === data[key] && (data[key] % 1 !== 0))) {
+        // console.log("{}: {} [{}])".format(key, data[key], typeof data[key]))
+        // if (Number.isInteger(data[key])) {
+        //     data[key] = data[key].toLocaleString('en-US') + "   ";
+        // }
+        else if (Number(data[key]) == data[key]) {
             // Int or float
-            intpart = Math.floor(data[key]);
-            fracpart = Math.round(data[key] * 100 % 100);
-            data[key] = "{}.{}".format(intpart.toString(), fracpart.toString().padStart(2, "0"));
+            // intpart = Math.floor(data[key]);
+            // fracpart = Math.round(data[key] * 100 % 100);
+            // data[key] = "{}.{}".format(intpart.toString(), fracpart.toString().padStart(2, "0"));
+            console.log("{}: {}".format(key, data[key]))
+            data[key] = data[key].toLocaleString('en-US', { minimumFractionDigits: 2 });
         }
         keylength = Math.max(keylength, key.toString().length);
         vallength = Math.min(Math.max(vallength, data[key].toString().length), 200);
@@ -62,17 +68,17 @@ function prettify_details(data) {
         // }
     }
     out = [];
-    out.push("╔" + "═".repeat(keylength) + "╦" + "═".repeat(vallength) + "╗");
+    out.push("╔" + "═".repeat(keylength + 2) + "╦" + "═".repeat(vallength + 2) + "╗");
     for (key in data) {
         for (index in data[key]) {
-            curstr = "║";
+            curstr = "║ ";
             curstr += key.toString().padEnd(keylength);
-            curstr += "║";
+            curstr += " ║ ";
             curstr += data[key][index].toString().padStart(vallength);
-            curstr += "║";
+            curstr += " ║";
             out.push(curstr);
         }
     }
-    out.push("╚" + "═".repeat(keylength) + "╩" + "═".repeat(vallength) + "╝");
+    out.push("╚" + "═".repeat(keylength + 2) + "╩" + "═".repeat(vallength + 2) + "╝");
     return out.join("<br />");
 }

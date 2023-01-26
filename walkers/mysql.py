@@ -19,16 +19,18 @@ def walker(tree, parent=None, depth=0):
     current.pop("used_columns", None)
     for name, cost in current["cost_info"].items():
         current["Cost - {}".format(name)] = cost
-    current["__cost"] = sum([float(current["cost_info"][i])
-                             for i in current["cost_info"]
-                             if i.endswith("cost")])
+    current["__cost"] = sum(float(current["cost_info"][i])
+                            for i in current["cost_info"]
+                            if i.endswith("cost"))
     # costs = [current.get("Cost - query_cost", None),
     #          current.get("Cost - prefix_cost", None),
     #          current.get("Cost - eval_cost", None),
     #          current.get("Cost - read_cost", None)]
     # current["__cost"] = float(next(c for c in costs if c is not None))
     current.pop("cost_info", None)
-    name = prunejoin(current, ["table_name"], sep=" ")
+    name = current.get("access_type", "")
+    if "table_name" in current:
+        name += " as {}".format(current["table_name"])
     if depth == 0:
         name += " - Total Cost: {:15,.2f}".format(current["__cost"])
     current["__label"] = name
@@ -41,3 +43,6 @@ def walker(tree, parent=None, depth=0):
     if "nested_loop" in container:
         for entry in container["nested_loop"]:
             yield from walker(entry["table"], current, depth + 1)
+    if "optimized_away_subqueries" in container:
+        for entry in container["optimized_away_subqueries"]:
+            yield from walker(entry["query_block"]["table"], current, depth + 1)

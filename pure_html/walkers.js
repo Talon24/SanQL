@@ -26,7 +26,7 @@ function* postgres_walker(tree, parent = null, depth = 0) {
     }
     if (depth == 0) {
         // name += " - Total Cost: {:15,.2f}".format(current["__cost"]);
-        name += " - Total Cost: {}".format(current["__cost"].toFixed(2));
+        name += " - Total Cost: {}".format(current["__cost"].toLocaleString('en-US', { minimumFractionDigits: 2 }));
     }
     current["__label"] = name;
     // console.log(current["__cost"]);
@@ -87,6 +87,12 @@ function* vertica_walker(tree, parent = null, depth = 0) {
 
 function* mysql_walker(tree, parent = null, depth = 0) {
     var current = JSON.parse(JSON.stringify(tree));
+    for (key in current){
+        if (Number(current[key]) == current[key]){
+            // console.log("Convert {} = {} [{}]".format(key, current[key], typeof key))
+            current[key] = Number(current[key])
+        }
+    }
     delete current["nested_loop"];
     delete current["used_columns"];
     var costs = 0;
@@ -100,9 +106,12 @@ function* mysql_walker(tree, parent = null, depth = 0) {
     if ("read_cost" in current["cost_info"]) { costs += Number(current["cost_info"]["read_cost"]); }
     current["__cost"] = costs;
     delete current["cost_info"];
-    var name = current["table_name"];
+    var name = current["access_type"] ?? ""
+    if ("table_name" in current){
+        name += " as " + current["table_name"];
+    }
     if (depth == 0) {
-        name += " - Total Cost: {}".format(current["__cost"].toFixed(2));
+        name += " - Total Cost: {}".format(current["__cost"].toLocaleString('en-US', { minimumFractionDigits: 2 }));
     }
     current["__label"] = name;
     delete current["ordering_operation"];
@@ -114,6 +123,16 @@ function* mysql_walker(tree, parent = null, depth = 0) {
     if ("nested_loop" in container) {
         for (entry of container["nested_loop"]) {
             yield* mysql_walker(entry["table"], current, depth + 1);
+        }
+    }
+    if ("optimized_away_subqueries" in container) {
+        for (entry of container["optimized_away_subqueries"]) {
+            yield* mysql_walker(entry["query_block"]["table"], current, depth + 1);
+        }
+    }
+    if ("materialized_from_subquery" in container) {
+        for (entry of container["materialized_from_subquery"]) {
+            yield* mysql_walker(entry["query_block"]["table"], current, depth + 1);
         }
     }
 }
