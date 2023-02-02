@@ -54,7 +54,7 @@ function prettify_details(data) {
             // intpart = Math.floor(data[key]);
             // fracpart = Math.round(data[key] * 100 % 100);
             // data[key] = "{}.{}".format(intpart.toString(), fracpart.toString().padStart(2, "0"));
-            console.log("{}: {}".format(key, data[key]))
+            // console.log("{}: {}".format(key, data[key]))
             data[key] = data[key].toLocaleString('en-US', { minimumFractionDigits: 2 });
         }
         keylength = Math.max(keylength, key.toString().length);

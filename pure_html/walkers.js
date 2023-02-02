@@ -87,14 +87,12 @@ function* vertica_walker(tree, parent = null, depth = 0) {
 
 function* mysql_walker(tree, parent = null, depth = 0) {
     var current = JSON.parse(JSON.stringify(tree));
-    for (key in current){
-        if (Number(current[key]) == current[key]){
-            // console.log("Convert {} = {} [{}]".format(key, current[key], typeof key))
+    for (key in current) {
+        if (Number(current[key]) == current[key]) {
             current[key] = Number(current[key])
         }
     }
-    delete current["nested_loop"];
-    delete current["used_columns"];
+
     var costs = 0;
     for (key in current["cost_info"]) {
         current["Cost - " + key] = current["cost_info"][key];
@@ -102,37 +100,68 @@ function* mysql_walker(tree, parent = null, depth = 0) {
         //     costs += Number(current["cost_info"][key])
         // }
     }
+    // console.log(JSON.parse(JSON.stringify(current)))
+    if ("possible_keys" in current) { current["possible_keys"] = current["possible_keys"].join(", "); }
+    if ("used_columns" in current) { current["used_columns"] = current["used_columns"].join(", "); }
+
     if ("cost_info" in current && "query_cost" in current["cost_info"]) { costs = Number(current["cost_info"]["query_cost"]); }
     if ("read_cost" in current["cost_info"]) { costs += Number(current["cost_info"]["read_cost"]); }
     current["__cost"] = costs;
-    delete current["cost_info"];
     var name = current["access_type"] ?? ""
-    if ("table_name" in current){
+    if ("table_name" in current) {
         name += " as " + current["table_name"];
     }
     if (depth == 0) {
         name += " - Total Cost: {}".format(current["__cost"].toLocaleString('en-US', { minimumFractionDigits: 2 }));
     }
     current["__label"] = name;
+
+    if ("ordering_operation" in current) {
+        for (let [key, val] of Object.entries(current["ordering_operation"])) {
+            if (typeof val === "boolean" || typeof val === "string" || typeof val === "number") {
+                current["Ordering: " + key] = val
+            }
+            else {
+                current[key] = val
+            }
+        }
+    }
     delete current["ordering_operation"];
+
+    if ("duplicates_removal" in current) {
+        for (let [key, val] of Object.entries(current["duplicates_removal"])) {
+            if (typeof val === "boolean" || typeof val === "string" || typeof val === "number") {
+                current["Distinct: " + key] = val
+            }
+            else {
+                current[key] = val
+            }
+        }
+    }
     delete current["duplicates_removal"];
-    yield [current, parent, depth];
-    var container = tree;
-    if ("ordering_operation" in container) { container = container["ordering_operation"]; }
-    if ("duplicates_removal" in container) { container = container["duplicates_removal"]; }
+
+    var viewable = JSON.parse(JSON.stringify(current));
+    delete viewable["nested_loop"];
+    delete viewable["optimized_away_subqueries"];
+    delete viewable["materialized_from_subquery"];
+    delete viewable["cost_info"];
+    // delete viewable["used_columns"];
+
+    yield [viewable, parent, depth];
+    var container = current;
     if ("nested_loop" in container) {
-        for (entry of container["nested_loop"]) {
-            yield* mysql_walker(entry["table"], current, depth + 1);
+        for (var entry of container["nested_loop"]) {
+            yield* mysql_walker(entry["table"], viewable, depth + 1);
         }
     }
     if ("optimized_away_subqueries" in container) {
         for (entry of container["optimized_away_subqueries"]) {
-            yield* mysql_walker(entry["query_block"]["table"], current, depth + 1);
+            yield* mysql_walker(entry["query_block"]["table"], viewable, depth + 1);
         }
     }
     if ("materialized_from_subquery" in container) {
         for (entry of container["materialized_from_subquery"]) {
-            yield* mysql_walker(entry["query_block"]["table"], current, depth + 1);
+            yield* mysql_walker(entry["query_block"]["table"], viewable, depth + 1);
         }
     }
 }
